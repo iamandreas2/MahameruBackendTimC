@@ -1,1 +1,0 @@
-buat naroh kesimpulan ja
