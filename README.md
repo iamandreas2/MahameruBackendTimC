@@ -5,7 +5,7 @@ Anggota Kelompok :
     Tim A :
        1. Fahreza Dhia Ananto
        2. Faizal Rizqi Kholily
-       3. Andreas Chandra Bungaran
+       3. Yohannes Kukuh Parlindungan
   
     Tim B :
        1. Aditya Nugraha
@@ -15,4 +15,4 @@ Anggota Kelompok :
     Tim C :
        1. Muhammad Tegar Fitriano Jagat
        2. Mukhamad Dichoirin
-       3. Yohannes Kukuh Parlindungan
+       3. Andreas Chandra Bungaran
