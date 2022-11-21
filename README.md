@@ -1,8 +1,8 @@
 # Mahameru Backend
 
-Anggota A :
+Anggota Kelompok :
     
-    Tim Integrator :
+    Tim A :
        1. Fahreza Dhia Ananto
        2. Faizal Rizqi Kholily
        3. Andreas Chandra Bungaran
