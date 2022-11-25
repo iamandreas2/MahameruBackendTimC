@@ -1,8 +1,8 @@
 # Mahameru Backend
 
-## [You are now in the page of **Backend Repo**]
+[You are now in the page of **Backend Repo**]
 
-## [Click here to see our **Frontend Repo**](https://github.com/DhiaReza/MahameruFrontend)
+[Click here to see our **Frontend Repo**](https://github.com/DhiaReza/MahameruFrontend)
 
 
     Anggota Kelompok :
