@@ -1,10 +1,15 @@
 from flask import Flask, jsonify, request
 import uuid
+from flask import Blueprint, render_template, abort
+from jinja2 import TemplateNotFound
+from db import *
 
-app = Flask(__name__)
+channel = Blueprint('channel', __name__,
+                        template_folder='templates')
+
 
 # placeholder data
-Channel = {
+'''Channel = {
     'userid': '',
     'name': '',
     'no_telp': '',
@@ -12,26 +17,13 @@ Channel = {
     'created_at': '',
     'updated_at': '',
     'contact_id': ''
-}
+}'''
 
 # User 
-@app.route('/user', methods=['GET'])
+@channel.route('/get', methods=['GET'])
 def getchannel():
-    try:
-        Channel['userid'] = 'Tegar'
-        Channel['no_telp'] = '085157527749'
-        Channel['pin'] = '123456'
-        Channel['created_at'] = '23/11/2022'
-        Channel['updated_at'] = ''
-        Channel['contact_id'] = 2
-        response = jsonify(Channel)
-        response.status_code = 200
-    except Exception as e:
-        print(e)
-        response = jsonify({'message': 'Failed to create user'})
-        response.status_code = 400
-    finally:
-        return response
+    data = get_Channel()
+    return data
 
 # TODO : fix this so it match with the given docs
 @app.route('/createuser', methods=['POST'])
