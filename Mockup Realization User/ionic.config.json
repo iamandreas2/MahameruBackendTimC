@@ -1,0 +1,8 @@
+{
+  "name": "Mahameru",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue",
+  "id": "f6ef04c8"
+}
