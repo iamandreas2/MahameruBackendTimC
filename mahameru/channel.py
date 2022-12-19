@@ -91,7 +91,7 @@ def channel_one(id):
     resp = dumps(channel)
     return resp
 
-@bp.route('/deletechannel/<id>',methods=['DELETE']) # hapus channel sesuai dengan user ID
+@bp.route('/deletechannel/<id>',methods=['DELETE']) # hapus channel sesuai dengan channel ID
 def deletechannel(id):
     user = delete_channel(id)
     resp = dumps(channel)
