@@ -4,6 +4,7 @@ from .model.db_channel import *
 from bson.json_util import dumps
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
+import datetime
 
 bp = Blueprint('channel', __name__,
                         template_folder='templates')
@@ -27,7 +28,7 @@ def add_channel():
     channel["desc"] = form['description']
     channel["owner"] =form['owner_id']
     channel["members"] = form['members_id']
-    channel["createdate"] = form['created_at'] # ini diganti jadi system yg ambil
+    channel["createdate"] = datetime.datetime.now() # ini diganti jadi system yg ambil
 
  
     if request.method == "POST" and form['name']:
@@ -56,7 +57,7 @@ def updatechannel(id): # kelar
     channel["name"] = form['name']
     channel["desc"] = form['description']
     channel["owner"] =form['owner']
-    channel["createdate"] = form['createdate']
+    channel["createdate"] = datetime.datetime.now()
     #current_app.logger.debug(id)
 
 
@@ -93,6 +94,6 @@ def channel_one(id):
 
 @bp.route('/deletechannel/<id>',methods=['DELETE']) # hapus channel sesuai dengan user ID
 def deletechannel(id):
-    user = delete_channel(id)
+    channel = delete_channel(id)
     resp = dumps(channel)
     return resp
