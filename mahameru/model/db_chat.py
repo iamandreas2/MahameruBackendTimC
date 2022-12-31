@@ -97,7 +97,7 @@ def get_channel_messages(id):
 
 def get_chatwith_telp(reciever, sender):
     collection = get_collection('chat')
-    pipeline = [{"$match" : {"telp" : reciever, "from_user" : sender}}, {"$lookup" : {"from" : "user", "localField" : 'telp', "foreignField" : 'notelp', "as" : 'reciever data'}}]
+    pipeline = [{"$match" : {"$or" : [{"telp" : reciever, "from_user" : sender}, {"telp" : sender, "from_user" : reciever}]}}, {"$sort" : {"sent" : 1}}, {"$lookup" : {"from" : "user", "localField" : 'from_user', "foreignField" : '_id', "as" : 'sender data'}}, {"$lookup" : {"from" : "user", "localField" : 'telp', "foreignField" : 'notelp', "as" : 'reciever data'}}]
     data = collection.aggregate(pipeline)
     current_app.logger.debug(data)
     return data
@@ -128,9 +128,9 @@ def get_chatwith_telp(reciever, sender):
 #     return resp
 
 #filter chat in inbox by date
-def display_inbox():
-    collection = get_collection("user")
-    pipeline = [{"$lookup": {"from": "chat", "let": {"user_id": "$_id"}, "pipeline": [{"$match": {"user_id": "$$user_id"}}, {"$sort": {"datetime": -1}}, {"$limit": 1}], "as": "latest_chat"}}]
+def display_inbox(user_id):
+    collection = get_collection("chat")
+    pipeline = [{"$match": {"from_user": user_id}}, {"$sort": {"sent": -1}}, {"$limit": 1}, {"$lookup": {"from": "user", "localField": "telp", "foreignField": "notelp", "as": "sender"}}, {"$unwind": "$sender"}, {"$project": {"sender_id": "$sender._id", "sender.name": 1, "message": 1, "sent": 1}}]
     result = collection.aggregate(pipeline)
     return result
 

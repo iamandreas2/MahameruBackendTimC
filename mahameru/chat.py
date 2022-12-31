@@ -86,7 +86,30 @@ def get_personal_telp(telp):
     to_user = telp
     from_user = a
     chats = get_chatwith_telp(to_user, from_user)
-    resp = dumps(chats)
+
+    # Initialize an empty list to store the chat messages
+    chat_messages = []
+
+    # Iterate over the cursor and extract the chat messages
+    # with the sender and recipient information
+    for chat in chats:
+        if chat['from_user'] == from_user:
+            sender_data = chat['sender data'][0]
+            recipient_data = chat['reciever data'][0]
+        else:
+            sender_data = chat['reciever data'][0]
+            recipient_data = chat['sender data'][0]
+        chat_message = {
+            'message': chat['message'],
+            'sent': chat['sent'],
+            'status': chat['status'],
+            'sender': sender_data['name'],
+            'recipient': recipient_data['name'],
+        }
+        chat_messages.append(chat_message)
+
+    # Serialize the list of chat messages as a JSON string
+    resp = json.dumps(chat_messages)
     return resp
 
 # @bp.route('/getinfo/<val>')
@@ -114,9 +137,9 @@ def find_info(val):
 
     
 #display chat pada inbox sesuai dengan user dan message terbaru
-@bp.route('/inbox', methods=['GET'])
-def inbox():
-    resp = display_inbox()
+@bp.route('/inbox/<user_id>', methods=['GET'])
+def inbox(user_id):
+    resp = display_inbox(user_id)
     return dumps(resp)
     
 if __name__ == "__main__":
