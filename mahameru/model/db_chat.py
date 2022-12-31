@@ -41,13 +41,13 @@ def number_match(number):
         status = "0"
     return status
     
-def sendchat(telp, from_user, message, created_at):
+def sendchat(to_telp, from_telp, message, created_at):
     collection = get_collection("chat")
-    a = number_match(telp)
-    if a == '1':
-        result = collection.insert_one({"telp" : telp, "from_user" : from_user, "message" : message, "sent" : created_at, "status" : True})
-    elif a == '0':
-        result = collection.insert_one({"telp" : telp, "from_user" : from_user, "message" : message, "sent" : created_at, "status" : False})  
+    # a = number_match(telp)
+    # if a == '1':
+    result = collection.insert_one({"to_telp" : to_telp, "from_telp" : from_telp, "message" : message, "sent" : created_at, "status" : True})
+    # elif a == '0':
+    #     result = collection.insert_one({"telp" : telp, "from_user" : from_user, "message" : message, "sent" : created_at, "status" : False})  
     return result.inserted_id
 
 def update_chats(id, chat):
@@ -95,11 +95,72 @@ def get_channel_messages(id):
 #     current_app.logger.debug(result)
 #     return result
 
+# def get_chatwith_telp(reciever, sender):
+#     collection = get_collection('chat')
+#     pipeline = [
+#         {
+#             "$match": {
+#                 "$or": [
+#                     {"to_telp": reciever, "from_telp": sender},
+#                     {"to_telp": sender, "from_telp": reciever}
+#                 ]
+#             }
+#         },
+#         {
+#             "$sort": {"sent": 1}
+#         },
+#         {
+#             "$lookup": {
+#                 "from": "user",
+#                 "localField": 'from_user',
+#                 "foreignField": '_id',
+#                 "as": 'sender data'
+#             }
+#         },
+#         {
+#             "$lookup": {
+#                 "from": "user",
+#                 "localField": 'telp',
+#                 "foreignField": 'notelp',
+#                 "as": 'recipient data'
+#             }
+#         }
+#     ]
+#     data = collection.aggregate(pipeline)
+#     return data
+
 def get_chatwith_telp(reciever, sender):
     collection = get_collection('chat')
-    pipeline = [{"$match" : {"$or" : [{"telp" : reciever, "from_user" : sender}, {"telp" : sender, "from_user" : reciever}]}}, {"$sort" : {"sent" : 1}}, {"$lookup" : {"from" : "user", "localField" : 'from_user', "foreignField" : '_id', "as" : 'sender data'}}, {"$lookup" : {"from" : "user", "localField" : 'telp', "foreignField" : 'notelp', "as" : 'reciever data'}}]
+    pipeline = [
+        {
+            "$match": {
+                "$or": [
+                    {"to_telp": reciever, "from_telp": sender},
+                    {"to_telp": sender, "from_telp": reciever}
+                ]
+            }
+        },
+        {
+            "$sort": {"sent": 1}
+        },
+        {
+            "$lookup": {
+                "from": "user",
+                "localField": 'from_telp',
+                "foreignField": 'notelp',
+                "as": 'sender'
+            }
+        },
+        {
+            "$lookup": {
+                "from": "user",
+                "localField": 'to_telp',
+                "foreignField": 'notelp',
+                "as": 'recipient'
+            }
+        }
+    ]
     data = collection.aggregate(pipeline)
-    current_app.logger.debug(data)
     return data
 
 #find chat by value
@@ -128,9 +189,24 @@ def get_chatwith_telp(reciever, sender):
 #     return resp
 
 #filter chat in inbox by date
-def display_inbox(user_id):
+def display_inbox(to_telp):
     collection = get_collection("chat")
-    pipeline = [{"$match": {"from_user": user_id}}, {"$sort": {"sent": -1}}, {"$limit": 1}, {"$lookup": {"from": "user", "localField": "telp", "foreignField": "notelp", "as": "sender"}}, {"$unwind": "$sender"}, {"$project": {"sender_id": "$sender._id", "sender.name": 1, "message": 1, "sent": 1}}]
+    pipeline = [
+        {"$match": {"to_telp": to_telp}},
+        {"$sort": {"sent": -1}},
+        {"$group": {
+            "_id": "$from_telp",
+            "latest_message": {"$first": "$$ROOT"}
+        }},
+        {"$lookup": {
+            "from": "user",
+            "localField": "_id",
+            "foreignField": "notelp",
+            "as": "sender"
+        }},
+        {"$unwind": "$sender"},
+        {"$project": {"sender_id": "$sender._id", "sender.name": 1, "latest_message.message": 1, "latest_message.sent": 1}}
+    ]
     result = collection.aggregate(pipeline)
     return result
 

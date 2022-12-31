@@ -19,16 +19,16 @@ def get_chats():
 #.strftime("%m/%d/%Y, %H:%M:%S")
 @bp.route('/sendchat', methods=['POST'])
 def send_chat():
-    date = datetime.datetime.now().isoformat()
-    date_time = date
+    date = datetime.datetime.now()
+    date_time = date.strftime("%m/%d/%Y, %H:%M:%S")
     json = request.json 
-    telp = json['telp']
-    from_user = json['from_user']
+    to_telp = json['to_telp']
+    from_telp = json['from_telp']
     message = json['message']
     sent = date_time
 
     if request.method == "POST":
-        _id = sendchat(telp, ObjectId(from_user), message, sent)
+        _id = sendchat(to_telp, from_telp, message, sent)
         chat = dumps(_id)
         resp = "chat _id : " + chat
         current_app.logger.debug(_id)
@@ -79,37 +79,15 @@ def listchannels(id):
     return answer
 
 # ini untuk diplay message pada messaging system
-# a = from_user. input sendiri (logged in user)
+# a = from_telp. input sendiri (logged in user)
+# <telp> itu chat dengan
 @bp.route('/chatwith/<telp>')
 def get_personal_telp(telp):
-    a = '63a57ff9381277a6d7336e4d'
-    to_user = telp
-    from_user = a
-    chats = get_chatwith_telp(to_user, from_user)
-
-    # Initialize an empty list to store the chat messages
-    chat_messages = []
-
-    # Iterate over the cursor and extract the chat messages
-    # with the sender and recipient information
-    for chat in chats:
-        if chat['from_user'] == from_user:
-            sender_data = chat['sender data'][0]
-            recipient_data = chat['reciever data'][0]
-        else:
-            sender_data = chat['reciever data'][0]
-            recipient_data = chat['sender data'][0]
-        chat_message = {
-            'message': chat['message'],
-            'sent': chat['sent'],
-            'status': chat['status'],
-            'sender': sender_data['name'],
-            'recipient': recipient_data['name'],
-        }
-        chat_messages.append(chat_message)
-
-    # Serialize the list of chat messages as a JSON string
-    resp = json.dumps(chat_messages)
+    a = '0878001'
+    to_telp = telp
+    from_telp = a
+    chats = get_chatwith_telp(to_telp, from_telp)
+    resp = dumps(chats)
     return resp
 
 # @bp.route('/getinfo/<val>')
@@ -135,11 +113,11 @@ def find_info(val):
             else:
                 return "nothing was found"
 
-    
+#telp logged in user
 #display chat pada inbox sesuai dengan user dan message terbaru
-@bp.route('/inbox/<user_id>', methods=['GET'])
-def inbox(user_id):
-    resp = display_inbox(user_id)
+@bp.route('/inbox/<to_telp>', methods=['GET'])
+def inbox(to_telp):
+    resp = display_inbox(to_telp)
     return dumps(resp)
     
 if __name__ == "__main__":
