@@ -1,0 +1,14 @@
+{
+    "_id": {
+      "$oid": "63b7565cb47b6ac6b7a83cce"
+    },
+    "channel_id": "1",
+    "member_id": "12"
+}  
+{
+    "_id": {
+      "$oid": "63b7565cb47b6ac6b7a83cce"
+    },
+    "channel_id": "2",
+    "member_id": "12"
+}  
