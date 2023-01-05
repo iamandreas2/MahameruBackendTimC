@@ -3,6 +3,8 @@ from flask import Flask
 from bson.json_util import dumps
 #from . import user
 from . import chat
+from . import user
+from . import contact
 from flask_cors import CORS
 
 
@@ -13,6 +15,8 @@ def create_app(test_config=None):
     CORS(app)
     #app.register_blueprint(user.bp)
     app.register_blueprint(chat.bp)
+    app.register_blueprint(user.bp)
+    app.register_blueprint(contact.bp)
 
     try:
         os.makedirs(app.instance_path)
